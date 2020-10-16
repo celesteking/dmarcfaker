@@ -1,0 +1,28 @@
+orgs:
+  - !!map
+    org_name: google.com
+    email: noreply-dmarc-support@google.com
+    extra_contact_info: https://support.google.com/a/answer/2466580
+  - !!map
+    org_name: Yahoo! Inc.
+    email: postmaster@dmarc.yahoo.com
+    extra_contact_info:
+  - !!map
+    org_name: emailsrvr.com
+    email: dmarc_reports@emailsrvr.com
+    extra_contact_info: http://emailsrvr.com
+  - !!map
+    org_name: esa2.hc225-14.ca.iphmx.com
+    email: MAILER-DAEMON@esa2.hc225-14.ca.iphmx.com
+    extra_contact_info:
+
+  - !!map
+    org_name: AMAZON-SES
+    email: postmaster@amazonses.com
+    extra_contact_info:
+
+# define your domains that will be rotated through
+domains:
+  - nasty.com
+  - x.io
+  - random.internal
