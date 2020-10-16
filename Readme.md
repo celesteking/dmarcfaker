@@ -4,14 +4,20 @@ Hey, psst. Want some fake DMARC reports?
 
 *We've got them!*
 
+### Installation
+
+Get some ruby, then `bundle install`.
+
 ### Usage
 
 ```bash
-# will output XML file to terminal 
+# will output XML file to terminal spanning last day
 ./runme.rb --backward 1 --records 3
 
-# will write compressed XML file to ./output/ dir
+# will write 2 compressed XML files to ./output/ dir
 ./runme.rb --backward 1 --records 3 --count 2 --out ./output/
+
+./runme.rb --help
 ```
 
 Take a look at `data/variants.yaml` where you can define a list of policy domains that will be cycled through during report generation.
