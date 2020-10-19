@@ -25,7 +25,7 @@ FactoryBot.define do
       time {{ backward: 7 }}
     end
 
-    version { 1 }
+    version { 1.0 }
     report_metadata { association :report_metadata, time: time }
 
     policy_published { association :policy_published, domain: domain }
@@ -157,7 +157,7 @@ FactoryBot.define do
       policy_eval_result_spf {}
       policy_eval_result_dkim {}
       spf_auth_results_count { 1 + (rand < 0.2 ? 1 : 0) }
-      dkim_auth_results_count { policy_eval_result_dkim == :missing ? 0 : (rand > 0.2 ? 1 : 2) } # 0..2
+      dkim_auth_results_count { (policy_eval_result_dkim == :missing) ? 0 : (rand > 0.2 ? 1 : 2) } # 0..2
     end
 
     dkim  {
@@ -170,7 +170,9 @@ FactoryBot.define do
       dkim_auth_results_count.times.map {|idx| build(:dkim_auth_results, header_from: header_from, outcome: outcome[idx])  }
     } # size >=0
 
-    spf   { spf_auth_results_count.times.map { build(:spf_auth_results, header_from: header_from, envelope_from: envelope_from, outcome: policy_eval_result_spf) } } # size >=1
+    spf   { spf_auth_results_count.times.map {|idx| build(:spf_auth_results, header_from: header_from,
+                envelope_from: envelope_from, outcome: policy_eval_result_spf, first: idx == 0) }
+    } # size >=1
   end
 
   factory :spf_auth_results do
@@ -178,11 +180,12 @@ FactoryBot.define do
       header_from {}
       envelope_from {}
       outcome {}
+      first {} # first spf entry?
     end
-    domain { (rand < 0.2) ? Faker::Internet.domain_name : (envelope_from or header_from) }
-    scope { 'mfrom' }
+    domain { (rand < 0.2 or not first) ? Faker::Internet.domain_name : (envelope_from or header_from) }
+    scope { first ? 'mfrom' : 'helo' }
     result {
-      if outcome
+      if (first and outcome) or (not first and rand > 0.5)
         SPF_RESTYPE_GOOD[(rand < 0.5) ? 0 : 1 + rand(3).to_i]
       else
         SPF_RESTYPE_BAD[(rand < 0.5) ? 0 : 1 + rand(2).to_i]
